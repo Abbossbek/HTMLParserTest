@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web;
 
@@ -13,10 +15,9 @@ namespace HTMLParserTest
     {
         static void Main(string[] args)
         {
-            foreach (var item in GetLinks("https://www.olx.uz/oz/nedvizhimost/kvartiry/prodazha/novostrojki/", "https://www.olx.uz/d/oz/obyavlenie"))
-            {
-                Console.WriteLine(item);
-            }
+           var links = GetLinks("https://www.olx.uz/oz/nedvizhimost/kvartiry/prodazha/novostrojki/tashkent/", "https://www.olx.uz/d/oz/obyavlenie");
+           var url = links.FirstOrDefault(x => !x.EndsWith("promoted"));
+           new HttpClient().GetAsync("https://api.telegram.org/bot{{botToken}}/sendPhoto?chat_id={{channelId}}&photo=https://apollo-olx.cdnvideo.ru/v1/files/zedzhpj35s442-UZ/image;s=1000x700&caption=test")
         }
         public static List<string> GetLinks(string url, string contains = "")
         {
