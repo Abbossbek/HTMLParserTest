@@ -13,6 +13,9 @@ namespace HTMLParserTest
 {
     internal class Program
     {
+        private static string botToken = "281073250:AAGZ0bUyl_SOfU3VKTsTqVSGmhadTiRN0xc";
+        private static string channelId = "-1001767772442";
+
         static void Main(string[] args)
         {
             var links = GetLinks(GetHTMLDoc("https://www.olx.uz/oz/nedvizhimost/kvartiry/prodazha/novostrojki/tashkent/"), "https://www.olx.uz/d/oz/obyavlenie");
@@ -22,7 +25,22 @@ namespace HTMLParserTest
             var images = GetLinks(GetHTMLDoc(url), "https://apollo-olx.cdnvideo.ru", true);
             if (images.Count > 0)
             {
-                new HttpClient().GetAsync("https://api.telegram.org/bot{{botToken}}/sendPhoto?chat_id={{channelId}}&photo=https://apollo-olx.cdnvideo.ru/v1/files/zedzhpj35s442-UZ/image;s=1000x700&caption=test");
+                var tags = "";
+                foreach (var tag in ad.Tags)
+                {
+                    var ttag = tag.Split(':');
+                    tags += $"#{ttag[0].Replace(" ", "\\_").Replace("/", "\\_")}" + (ttag.Length > 1 ? $" : {ttag[1]}" : "") + ";\n";
+                }
+                var gurl = $"https://api.telegram.org/bot{botToken}/sendMessage?chat_id=@Yangi_uylar_uz&parse_mode=markdown&text=" +
+                    HttpUtility.UrlEncode(
+                    tags +
+                    $"[ ]({ad.ImageUrl})" +
+                    $"\n*{ad.Title}*\n\n" +
+                    $"#Narxi _{ad.Price}_\n\n" +
+                    $"{ad.Content}\n\n" +
+                    $"[Batafsil]({ad.Link})\n\n" +
+                    $"[@Yangi_uylar_uz](https://t.me/Yangi_uylar_uz)");
+                var result = new HttpClient().GetAsync(gurl).Result;
             }
         }
 
