@@ -13,8 +13,8 @@ namespace HTMLParserTest
 {
     internal class Program
     {
-        private static string botToken = "281073250:AAGZ0bUyl_SOfU3VKTsTqVSGmhadTiRN0xc";
-        private static string channelId = "-1001767772442";
+        private static string botToken = "";
+        private static string channelId = "";
 
         static void Main(string[] args)
         {
